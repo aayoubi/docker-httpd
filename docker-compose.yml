@@ -1,0 +1,20 @@
+version: '3'
+services:
+    load_balancer:
+        build: httpd_reverse_proxy
+        ports:
+            - "8080:8080"
+        depends_on:
+            - web
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+    web:
+        build: webapp
+        depends_on:
+            - redis
+        environment:
+            - PROXY=true
+            - PROXY_URL=""
+            - PROXY_SERVICE_NAME=app1
+    redis:
+        image: 'redis:3.2.9'
